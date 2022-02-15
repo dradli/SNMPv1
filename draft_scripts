@@ -1,0 +1,41 @@
+# Draft 
+# SNMPv1 configuration for non-supported RHEL
+# Author: @tansridatoiradli 
+# TikTok account
+
+#From user to root account
+sudo su -
+
+#Install package net-snmp & net-snmp-utils
+yum install net-snmp net-snmp-utils -y
+
+#Backup existing snmpd.conf file to snmpd.conf.orig
+cp /etc/snmp/snmpd.conf /etc/snmp/snmpd.conf.orig
+
+#Edit using nano/vi (recommended nano - text editor war is already over long time ago)
+nano /etc/snmp/snmpd.conf
+
+## Add into last line of snmpd.conf file
+
+rocommunity declare_community_string
+syscontact root@localhost
+
+############################
+#Enable & start snmpd service
+systemctl enable snmpd.service --now
+
+############################
+#Declare IPv4 listener
+echo "agentAddress 0.0.0.0" >> /etc/snmp/snmpd.conf
+
+#Declare SNMP Server IPv4 Address
+echo "agentAddress xx.xx.xx.xx >>/etc/snmp/snmptrapd.conf
+
+#Restart SNMP service
+systemctl restart snmpd.service
+
+#Check current status SNMP service
+systemctl status snmpd.service
+
+#Verify SNMP Output from client/server
+snmpwalk -v1 -c declare_community_string
